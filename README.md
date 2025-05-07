@@ -1,5 +1,5 @@
 # FinDataMCP
- 
+
 ## To run:
 1. Clone repo
 
@@ -18,7 +18,7 @@
    # Create virtual env and activate it
    uv venv
    source .venv/bin/activate
-   
+
    # Install dependencies
    uv add "mcp[cli]" httpx yfinance
    ```
