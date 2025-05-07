@@ -5,7 +5,6 @@
 
 2. Install uv (package manager):
    ```bash
-   # macOS/Linux
    curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
 
