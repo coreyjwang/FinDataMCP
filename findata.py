@@ -1,6 +1,9 @@
-from typing import Any
-import httpx
+# If using apis
+# from typing import Any
+# import httpx
+#
 from mcp.server.fastmcp import FastMCP
+import yfinance as yf
 
 # https://modelcontextprotocol.io/quickstart/server
 
@@ -14,31 +17,29 @@ mcp = FastMCP("findata")
 
 
 ##### Helper functions to query & format ####################################
-async def fetch_json(url: str) -> dict[str, Any] | None:
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(url, headers=HEADERS)
-            response.raise_for_status()
-            return response.json()
-        except Exception:
-            return None
+# async def fetch_json(url: str) -> dict[str, Any] | None:
+#     async with httpx.AsyncClient() as client:
+#         try:
+#             response = await client.get(url, headers=HEADERS)
+#             response.raise_for_status()
+#             return response.json()
+#         except Exception:
+#             return None
 
 
 ##### Tool execution handler ################################################
 @mcp.tool()
 async def get_stock_price(symbol: str) -> str:
-    """Get the current stock price for a ticker symbol.
+    """Get the current stock price using yfinance.
 
     Args:
         symbol: Stock ticker (e.g. AAPL, TSLA, MSFT)
     """
-    url = f"http://query1.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=financialData"
-    data = await fetch_json(url)
-
     try:
-        fin_data = data["quoteSummary"]["result"][0]["financialData"]
-        price = fin_data["currentPrice"]["raw"]
-        currency = fin_data.get("financialCurrency", "USD")
+        stock = yf.Ticker(symbol)
+        info = stock.info
+        price = info["currentPrice"]
+        currency = info.get("currency", "USD")
         return f"{symbol.upper()} is trading at {price} {currency}."
     except Exception:
         return f"Could not retrieve stock price for {symbol}."
